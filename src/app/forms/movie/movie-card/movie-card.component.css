@@ -1,0 +1,10 @@
+.movie-card {
+  width: 300px;
+  height: auto;
+}
+
+mat-card-content {
+  height: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
