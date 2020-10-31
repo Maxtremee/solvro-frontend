@@ -4,7 +4,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { HttpService } from '../http.service';
 import { Arrangement, Movie } from '../movie.model';
-import { UIService } from '../ui.service';
 
 @Component({
   selector: 'app-ticket-form',
@@ -27,6 +26,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     },
     { name: 'emeryt (50%)', value: 0.5 },
   ];
+  price = 20;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -71,8 +71,8 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
   getSumToPay(): number {
     if (this.ticketsValid && this.discount.valid)
-      return this.tickets.length * 20 * this.discount.value.value;
-    if (this.ticketsValid) return this.tickets.length * 20;
+      return this.tickets.length * this.price * this.discount.value.value;
+    if (this.ticketsValid) return this.tickets.length * this.price;
     else return 0;
   }
 

@@ -144,7 +144,7 @@
           fxLayoutAlign="space-evenly"
           fxLayoutGap="5px"
         >
-          <mat-card mat-ripple *ngIf="ticketsValid">
+          <mat-card *ngIf="ticketsValid">
             <mat-card-header>
               <mat-card-title> Film </mat-card-title>
             </mat-card-header>
@@ -162,7 +162,7 @@
             </mat-card-content>
           </mat-card>
 
-          <mat-card mat-ripple *ngIf="personalData.valid">
+          <mat-card *ngIf="personalData.valid">
             <mat-card-header>
               <mat-card-title> Dane kontaktowe </mat-card-title>
             </mat-card-header>
