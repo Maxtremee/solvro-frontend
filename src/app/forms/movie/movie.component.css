@@ -1,8 +1,0 @@
-.not-chosen {
-  border-style: none;
-}
-
-.chosen {
-  border-style: solid;
-  border: 1px solid black;
-}
