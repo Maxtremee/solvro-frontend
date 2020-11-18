@@ -16,7 +16,7 @@ import { Arrangement } from 'src/app/movie.model';
 export class CinemaHallComponent implements OnInit {
   @Input() arrangement: Arrangement;
   @Output() ticketsEvent = new EventEmitter<FormArray>();
-  @Output() ticketsValidEvent = new EventEmitter<boolean>();
+  @Output() ticketsValidEvent = new EventEmitter<number>();
 
   tickets: FormArray;
 
@@ -41,12 +41,8 @@ export class CinemaHallComponent implements OnInit {
       .map((x, i) => i + 1);
   }
 
-  ngOnDestroy() {}
-
   areTicketsValid() {
-    this.tickets.length > 0
-      ? this.ticketsValidEvent.emit(true)
-      : this.ticketsValidEvent.emit(false);
+    this.ticketsValidEvent.emit(this.tickets.length);
   }
   manageTicket(row: string, seat: number) {
     //if seat occupied
@@ -55,7 +51,7 @@ export class CinemaHallComponent implements OnInit {
     }
 
     //if no tickets
-    if (this.tickets.value.length == 0 || this.tickets.value === null) {
+    if (this.tickets.value === null || this.tickets.value.length == 0) {
       this.tickets.push(this.createTicket(row, seat));
       this.setState(row, seat, 2);
       this.ticketsEvent.emit(this.tickets);
@@ -94,49 +90,12 @@ export class CinemaHallComponent implements OnInit {
 
   getState(row: string, seat: number) {
     if (this.arrangement != null) {
-      switch (row) {
-        case 'A':
-          return this.arrangement.A[seat - 1][seat];
-        case 'B':
-          return this.arrangement.B[seat - 1][seat];
-        case 'C':
-          return this.arrangement.C[seat - 1][seat];
-        case 'D':
-          return this.arrangement.D[seat - 1][seat];
-        case 'E':
-          return this.arrangement.E[seat - 1][seat];
-        case 'F':
-          return this.arrangement.F[seat - 1][seat];
-        case 'G':
-          return this.arrangement.G[seat - 1][seat];
-      }
+      return this.arrangement[row][seat - 1][seat];
     } else return 0;
   }
 
   setState(row: string, seat: number, state: number) {
     // 0 - unoccupied, 1 - occupied, 2 - selected
-    switch (row) {
-      case 'A':
-        this.arrangement.A[seat - 1][seat] = state;
-        break;
-      case 'B':
-        this.arrangement.B[seat - 1][seat] = state;
-        break;
-      case 'C':
-        this.arrangement.C[seat - 1][seat] = state;
-        break;
-      case 'D':
-        this.arrangement.D[seat - 1][seat] = state;
-        break;
-      case 'E':
-        this.arrangement.E[seat - 1][seat] = state;
-        break;
-      case 'F':
-        this.arrangement.F[seat - 1][seat] = state;
-        break;
-      case 'G':
-        this.arrangement.G[seat - 1][seat] = state;
-        break;
-    }
+    return (this.arrangement[row][seat - 1][seat] = state);
   }
 }

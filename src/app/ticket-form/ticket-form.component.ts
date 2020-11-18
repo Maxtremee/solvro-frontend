@@ -4,13 +4,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { HttpService } from '../http.service';
 import { Arrangement, Movie } from '../movie.model';
+import { text } from '../../assets/text.const';
 
 @Component({
   selector: 'app-ticket-form',
   templateUrl: './ticket-form.component.html',
   styleUrls: ['./ticket-form.component.css'],
 })
-export class TicketFormComponent implements OnInit, OnDestroy {
+export class TicketFormComponent implements OnInit {
   movies: Movie[];
   movieSub$: Subscription;
   form: FormGroup;
@@ -43,14 +44,10 @@ export class TicketFormComponent implements OnInit, OnDestroy {
       personalData: [],
     });
 
-    this.movieSub$ = this.api.getMovieList().subscribe((movies) => {
+    this.movieSub$ = this.api.movieList.subscribe((movies) => {
       this.movies = movies;
     });
     this.api.addMovieToList('78483421');
-  }
-
-  ngOnDestroy(): void {
-    this.movieSub$.unsubscribe();
   }
 
   format_time(timestamp: number) {
@@ -70,19 +67,21 @@ export class TicketFormComponent implements OnInit, OnDestroy {
   }
 
   getSumToPay(): number {
-    if (this.ticketsValid && this.discount.valid)
+    if (this.ticketsValid && this.discount.valid) {
       return this.tickets.length * this.price * this.discount.value.value;
-    if (this.ticketsValid) return this.tickets.length * this.price;
-    else return 0;
+    }
+    if (this.ticketsValid) {
+      return this.tickets.length * this.price;
+    } else return 0;
   }
 
   makeReservation() {
-    this.snackBar.open('Dokonano rezerwacji!', 'Zamknij');
+    this.snackBar.open(text.madeReservationPL, text.closeSnackbarPL);
     console.log(this.form);
   }
 
   pay() {
-    this.snackBar.open('Zapłacono!', 'Zamknij');
+    this.snackBar.open(text.madePaymentPL, text.closeSnackbarPL);
     console.log(this.form);
   }
 

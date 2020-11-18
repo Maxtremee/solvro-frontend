@@ -9,8 +9,10 @@ import {
   FormControl,
   NG_VALIDATORS,
 } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, pipe } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Movie } from 'src/app/movie.model';
+import { text } from '../../../assets/text.const';
 
 export interface MovieFormValues {
   movieTitle: String;
@@ -34,39 +36,41 @@ export interface MovieFormValues {
   ],
 })
 export class MovieComponent implements ControlValueAccessor, OnDestroy, OnInit {
-  form: FormGroup;
-  subscriptions: Subscription[] = [];
-  isLoading = true;
-  private loadingSubscription: Subscription;
-
   @Input() movies: Movie[];
 
-  genericPoster =
-    'https://s.studiobinder.com/wp-content/uploads/2017/12/Movie-Poster-Template-Dark-with-Image.jpg?x81279';
-  description =
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed rhoncus auctor nunc ac semper. Proin id fringilla metus. Nam vestibulum, risus ut dapibus dapibus, sem ante accumsan turpis, ut auctor nulla sapien scelerisque enim. Phasellus ornare rutrum ex, sit amet aliquet velit ornare et. Donec et sem vitae nisi facilisis hendrerit. Curabitur sagittis justo a accumsan auctor. Sed et ornare sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.';
+  form: FormGroup;
+  isLoading = true;
+
+  private subscription = new Subscription();
+  private subsCutter$ = new Subject<void>();
+  private loadingSubscription: Subscription;
+
+  genericPoster = 'assets/poster.jpg';
+  description = text.movieDesc;
 
   constructor(private formBuilder: FormBuilder, private uiService: UIService) {
     this.form = this.formBuilder.group({
       movieTitle: ['', Validators.required],
     });
-
-    this.subscriptions.push(
-      this.form.valueChanges.subscribe((value) => {
-        this.onChange(value);
-        this.onTouched();
-      })
-    );
   }
 
   ngOnInit() {
+    this.subscription.add(
+      this.form.valueChanges
+        .pipe(takeUntil(this.subsCutter$))
+        .subscribe((value) => {
+          this.onChange(value);
+        })
+    );
+
     this.loadingSubscription = this.uiService.loadingStateChanged.subscribe(
       (isLoading) => (this.isLoading = isLoading)
     );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach((s) => s.unsubscribe());
+    this.subsCutter$.next();
+    this.subsCutter$.unsubscribe();
     this.loadingSubscription.unsubscribe();
   }
 
@@ -75,21 +79,15 @@ export class MovieComponent implements ControlValueAccessor, OnDestroy, OnInit {
       movieTitle: title,
     });
     this.onChange(title);
-    this.onTouched();
   }
 
-  get value(): MovieFormValues {
-    return this.form.value;
-  }
-
-  set value(value: MovieFormValues) {
-    this.form.setValue(value);
-    this.onChange(value);
-    this.onTouched();
-  }
-
-  get movieControl() {
-    return this.form.controls.movieId;
+  writeValue(value: MovieFormValues) {
+    if (value) {
+      this.value = value;
+    }
+    if (value === null) {
+      this.form.reset();
+    }
   }
 
   onChange: any = () => {};
@@ -99,21 +97,24 @@ export class MovieComponent implements ControlValueAccessor, OnDestroy, OnInit {
     this.onChange = fn;
   }
 
-  writeValue(value: MovieFormValues) {
-    if (value) {
-      this.value = value;
-    }
-
-    if (value === null) {
-      this.form.reset();
-    }
-  }
-
   registerOnTouched(fn: any) {
     this.onTouched = fn;
   }
 
   validate(_: FormControl) {
     return this.form.valid ? null : { movie: { valid: false } };
+  }
+
+  get value(): MovieFormValues {
+    return this.form.value;
+  }
+
+  set value(value: MovieFormValues) {
+    this.form.setValue(value);
+    this.onChange(value);
+  }
+
+  get movieControl() {
+    return this.form.controls.movieId;
   }
 }

@@ -5,12 +5,14 @@ import { catchError } from 'rxjs/operators';
 import { Movie } from './movie.model';
 import { UIService } from './ui.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { environment } from './../environments/environment';
+import { text } from '../assets/text.const';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HttpService {
-  private movieUrl = 'http://localhost:5000/movie';
+  private movieUrl = environment.movieUrl;
   private movies: BehaviorSubject<Movie[]> = new BehaviorSubject<Movie[]>([]);
 
   constructor(
@@ -19,28 +21,24 @@ export class HttpService {
     private snackBar: MatSnackBar
   ) {}
 
-  getMovieList(): BehaviorSubject<Movie[]> {
+  get movieList(): BehaviorSubject<Movie[]> {
     return this.movies;
   }
 
   addMovieToList(movieId: String) {
     this.uiService.loadingStateChanged.next(true);
-    let moviesCopy = this.movies.getValue();
     this.http
       .post<Movie>(this.movieUrl, { movie: movieId })
       .pipe(
         catchError((err) => {
-          this.snackBar.open(
-            'Nie można wczytać listy filmów. Spróbuj ponownie później'
-          );
+          this.snackBar.open(text.fetchMoviesErrorPL);
           return throwError(err);
         })
       )
       .subscribe((res: Movie) => {
-        moviesCopy.push(res);
+        this.movies.next([...this.movies.getValue(), res]);
         this.uiService.loadingStateChanged.next(false);
         console.log(res.status);
       });
-    this.movies.next(moviesCopy);
   }
 }

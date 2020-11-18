@@ -7,7 +7,6 @@ import { MovieComponent } from './forms/movie/movie.component';
 import { PersonalDataComponent } from './forms/personal-data/personal-data.component';
 import { MovieCardComponent } from '../app/forms/movie/movie-card/movie-card.component';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TicketFormComponent } from './ticket-form/ticket-form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -45,7 +44,6 @@ import {
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
     MatToolbarModule,
     MatExpansionModule,

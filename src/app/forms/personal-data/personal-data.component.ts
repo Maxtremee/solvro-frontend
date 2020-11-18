@@ -36,7 +36,7 @@ export interface PersonalDataValues {
 })
 export class PersonalDataComponent implements ControlValueAccessor, OnDestroy {
   form: FormGroup;
-  subscriptions: Subscription[] = [];
+  private subscriptions = new Subscription();
 
   constructor(private formBuilder: FormBuilder) {
     this.form = this.formBuilder.group({
@@ -46,16 +46,15 @@ export class PersonalDataComponent implements ControlValueAccessor, OnDestroy {
       phoneNumber: ['', [Validators.required]],
     });
 
-    this.subscriptions.push(
+    this.subscriptions.add(
       this.form.valueChanges.subscribe((value) => {
         this.onChange(value);
-        this.onTouched();
       })
     );
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.subscriptions.unsubscribe();
   }
 
   get value(): PersonalDataValues {
@@ -65,7 +64,6 @@ export class PersonalDataComponent implements ControlValueAccessor, OnDestroy {
   set value(value: PersonalDataValues) {
     this.form.setValue(value);
     this.onChange(value);
-    this.onTouched();
   }
 
   get emailControl() {
@@ -99,7 +97,6 @@ export class PersonalDataComponent implements ControlValueAccessor, OnDestroy {
     if (value) {
       this.value = value;
     }
-
     if (value === null) {
       this.form.reset();
     }

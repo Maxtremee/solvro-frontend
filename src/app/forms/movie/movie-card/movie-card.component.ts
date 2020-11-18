@@ -11,7 +11,5 @@ export class MovieCardComponent implements OnInit {
   @Input() description: String;
   @Input() badge: boolean;
 
-  constructor() {}
-
   ngOnInit(): void {}
 }

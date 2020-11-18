@@ -27,12 +27,13 @@ export class SeatComponent implements OnInit, OnChanges {
   }
 
   setColour() {
-    if (this.state === 1) {
-      return { 'background-color': '#B00020' };
-    } else if (this.state === 0) {
-      return { 'background-color': '#09AF00' };
-    } else if (this.state === 2) {
-      return { 'background-color': '#FFDE03' };
+    switch (this.state) {
+      case 0:
+        return { 'background-color': '#09AF00' };
+      case 1:
+        return { 'background-color': '#B00020' };
+      case 2:
+        return { 'background-color': '#FFDE03' };
     }
   }
 }
