@@ -1,0 +1,57 @@
+<div [formGroup]="form">
+  <mat-form-field appearance="outline">
+    <mat-label for="first-name">Imię</mat-label>
+    <input
+      type="text"
+      matInput
+      placeholder="Imię"
+      formControlName="firstName"
+      id="first-name"
+    />
+    <mat-error *ngIf="firstNameControl.invalid || firstNameControl.touched">
+      Pole nie może być puste
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label for="last-name">Nazwisko</mat-label>
+    <input
+      type="text"
+      matInput
+      placeholder="Nazwisko"
+      formControlName="lastName"
+      id="last-name"
+    />
+    <mat-error *ngIf="lastNameControl.invalid || lastNameControl.touched">
+      Pole nie może być puste
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label for="email">Email</mat-label>
+    <input
+      type="email"
+      matInput
+      placeholder="Twój email"
+      formControlName="email"
+      id="email"
+    />
+    <mat-error *ngIf="emailControl.invalid || emailControl.touched">
+      Pole musi zawierać poprawny adres email
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label for="phone-number">Numer telefonu</mat-label>
+    <input
+      type="number"
+      matInput
+      placeholder="Twój numer telefonu"
+      formControlName="phoneNumber"
+      id="phone-number"
+    />
+    <mat-error *ngIf="phoneNumberControl.invalid || phoneNumberControl.touched">
+      Pole nie może być puste
+    </mat-error>
+  </mat-form-field>
+</div>

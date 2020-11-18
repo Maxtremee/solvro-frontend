@@ -1,0 +1,15 @@
+<div [formGroup]="form" *ngIf="!isLoading">
+  <div *ngFor="let movie of movies">
+    <app-movie-card
+      [title]="movie.title"
+      [posterLink]="genericPoster"
+      [description]="description"
+      [badge]="form.value['movieTitle'] == movie.title"
+      (click)="setMovieValue(movie.title)"
+    >
+    </app-movie-card>
+  </div>
+</div>
+<div fxLayoutAlign="center center">
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+</div>
