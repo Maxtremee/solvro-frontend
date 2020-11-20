@@ -8,7 +8,8 @@ import {
   FormControl,
   NG_VALIDATORS,
 } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 export interface PersonalDataValues {
   firstName: String;
@@ -36,7 +37,8 @@ export interface PersonalDataValues {
 })
 export class PersonalDataComponent implements ControlValueAccessor, OnDestroy {
   form: FormGroup;
-  private subscriptions = new Subscription();
+  private subscription = new Subscription();
+  private subsCutter$ = new Subject<void>();
 
   constructor(private formBuilder: FormBuilder) {
     this.form = this.formBuilder.group({
@@ -46,15 +48,18 @@ export class PersonalDataComponent implements ControlValueAccessor, OnDestroy {
       phoneNumber: ['', [Validators.required]],
     });
 
-    this.subscriptions.add(
-      this.form.valueChanges.subscribe((value) => {
-        this.onChange(value);
-      })
+    this.subscription.add(
+      this.form.valueChanges
+        .pipe(takeUntil(this.subsCutter$))
+        .subscribe((value) => {
+          this.onChange(value);
+        })
     );
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    this.subsCutter$.next();
+    this.subsCutter$.unsubscribe();
   }
 
   get value(): PersonalDataValues {

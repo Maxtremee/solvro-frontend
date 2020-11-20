@@ -1,11 +1,6 @@
+import { _DisposeViewRepeaterStrategy } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Arrangement } from 'src/app/movie.model';
 
 @Component({
@@ -44,12 +39,12 @@ export class CinemaHallComponent implements OnInit {
   areTicketsValid() {
     this.ticketsValidEvent.emit(this.tickets.length);
   }
+
   manageTicket(row: string, seat: number) {
     //if seat occupied
     if (this.getState(row, seat) == 1) {
       return;
     }
-
     //if no tickets
     if (this.tickets.value === null || this.tickets.value.length == 0) {
       this.tickets.push(this.createTicket(row, seat));
@@ -57,28 +52,23 @@ export class CinemaHallComponent implements OnInit {
       this.ticketsEvent.emit(this.tickets);
       return;
     }
-
     //check if seat already selected
-    if (this.isSeatSelected(row, seat) === -1) {
+    const seatIndex = this.isSeatSelected(row, seat);
+    if (seatIndex === -1) {
       this.tickets.push(this.createTicket(row, seat));
       this.setState(row, seat, 2);
-      this.ticketsEvent.emit(this.tickets);
-    } else return;
+    } else {
+      this.tickets.removeAt(seatIndex);
+      this.setState(row, seat, 0);
+    }
+    this.ticketsEvent.emit(this.tickets);
   }
 
   isSeatSelected(row: string, seat: number) {
-    let value = -1;
-    this.tickets.value.forEach(
-      (ticket: { row: string; seat: number }, index: number) => {
-        if (ticket.row === row && ticket.seat === seat) {
-          this.tickets.removeAt(index);
-          this.setState(row, seat, 0);
-          this.ticketsEvent.emit(this.tickets);
-          value = index;
-        }
-      }
+    return this.tickets.value.findIndex(
+      (ticket: { row: string; seat: number }) =>
+        ticket.row === row && ticket.seat === seat
     );
-    return value;
   }
 
   createTicket(row: string, seat: number): FormGroup {

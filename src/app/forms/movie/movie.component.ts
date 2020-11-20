@@ -43,7 +43,6 @@ export class MovieComponent implements ControlValueAccessor, OnDestroy, OnInit {
 
   private subscription = new Subscription();
   private subsCutter$ = new Subject<void>();
-  private loadingSubscription: Subscription;
 
   genericPoster = 'assets/poster.jpg';
   description = text.movieDesc;
@@ -55,23 +54,24 @@ export class MovieComponent implements ControlValueAccessor, OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    this.subscription.add(
-      this.form.valueChanges
-        .pipe(takeUntil(this.subsCutter$))
-        .subscribe((value) => {
-          this.onChange(value);
-        })
-    );
-
-    this.loadingSubscription = this.uiService.loadingStateChanged.subscribe(
-      (isLoading) => (this.isLoading = isLoading)
-    );
+    this.subscription
+      .add(
+        this.uiService.loadingStateChanged.subscribe(
+          (isLoading) => (this.isLoading = isLoading)
+        )
+      )
+      .add(
+        this.form.valueChanges
+          .pipe(takeUntil(this.subsCutter$))
+          .subscribe((value) => {
+            this.onChange(value);
+          })
+      );
   }
 
   ngOnDestroy() {
     this.subsCutter$.next();
     this.subsCutter$.unsubscribe();
-    this.loadingSubscription.unsubscribe();
   }
 
   setMovieValue(title: String) {

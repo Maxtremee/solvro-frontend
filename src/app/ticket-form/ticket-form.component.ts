@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
 import { HttpService } from '../http.service';
 import { Arrangement, Movie } from '../movie.model';
 import { text } from '../../assets/text.const';
+import { discounts } from '../discounts.const';
 
 @Component({
   selector: 'app-ticket-form',
@@ -13,21 +13,13 @@ import { text } from '../../assets/text.const';
 })
 export class TicketFormComponent implements OnInit {
   movies: Movie[];
-  movieSub$: Subscription;
+  arrangement: Arrangement;
   form: FormGroup;
   ticketsValid: boolean;
   step = 0;
   sessions = [];
-  arrangement: Arrangement;
-  discounts = [
-    { name: 'brak', value: 1 },
-    {
-      name: 'studencka (30%)',
-      value: 0.7,
-    },
-    { name: 'emeryt (50%)', value: 0.5 },
-  ];
-  price = 20;
+  readonly discounts = discounts;
+  readonly price = 20;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -44,7 +36,7 @@ export class TicketFormComponent implements OnInit {
       personalData: [],
     });
 
-    this.movieSub$ = this.api.movieList.subscribe((movies) => {
+    this.api.movieList.subscribe((movies) => {
       this.movies = movies;
     });
     this.api.addMovieToList('78483421');

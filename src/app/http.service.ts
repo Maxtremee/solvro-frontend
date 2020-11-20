@@ -27,6 +27,7 @@ export class HttpService {
 
   addMovieToList(movieId: String) {
     this.uiService.loadingStateChanged.next(true);
+    const moviesCopy = [...this.movies.getValue()];
     this.http
       .post<Movie>(this.movieUrl, { movie: movieId })
       .pipe(
@@ -36,7 +37,9 @@ export class HttpService {
         })
       )
       .subscribe((res: Movie) => {
-        this.movies.next([...this.movies.getValue(), res]);
+        moviesCopy.push(res);
+        this.movies.next(moviesCopy);
+
         this.uiService.loadingStateChanged.next(false);
         console.log(res.status);
       });
