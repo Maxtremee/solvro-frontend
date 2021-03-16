@@ -1,15 +1,11 @@
 # SolvroFrontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.4.
+Recruitment task made with Angular 10 and Angular Material for science club Solvro at Wrocław University of Science and Technology (WUST). The task was to make a form that allows to buy or book cinema tickets.
 
 # Live demo
 
-Live demo available at https://www.mzadka.tk/
+Live demo available at https://www.mzadka.me/
 
 # Docker image
 
 Docker image available at maxtremee/solvro (https://hub.docker.com/r/maxtremee/solvro)
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
